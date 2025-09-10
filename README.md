@@ -1,42 +1,41 @@
 # Goldman Family Cookbook
 
-A beautiful, fast-loading digital cookbook viewer for the Goldman family recipe collection.
+A digital viewer for the Goldman family recipe collection.
 
 ## Features
 
-✨ **Performance Optimized**
-- Smart image preloading for smooth navigation
-- Loading indicators for better user experience
-- Optimized for large SVG files (2-3MB each)
+**Performance**
+- Preloads images for smooth page transitions
+- Shows loading indicators while images load
+- Handles large SVG files efficiently (2-3MB each)
 
-🎯 **Navigation**
-- Click arrow buttons to navigate
-- Keyboard shortcuts: `←` `→` arrow keys, `A` `D` keys
-- Touch/swipe support on mobile devices
-- `Home`/`End` keys to jump to first/last page
-- `Escape` to return to welcome screen
+**Navigation**
+- Arrow buttons for page navigation
+- Keyboard shortcuts: arrow keys (left/right), A/D keys
+- Touch and swipe gestures on mobile
+- Home/End keys jump to first/last page
+- Escape key returns to welcome screen
 
-📱 **Responsive Design**
-- Works beautifully on desktop, tablet, and mobile
-- Adaptive layout and controls
-- Touch-friendly interface
+**Mobile Support**
+- Works on desktop, tablet, and mobile devices
+- Responsive layout adapts to screen size
+- Touch-friendly controls
 
-🎨 **Modern UI**
-- Beautiful family cookbook theme
-- Progress bar showing reading progress
-- Page counter
-- Smooth animations and transitions
+**Interface**
+- Family cookbook styling
+- Progress bar tracks reading position
+- Page counter display
+- Smooth page transitions
 
 ## GitHub Pages Setup
 
-1. **Upload your files**: Make sure this `index.html` file is in the root directory of your repository
-2. **Enable GitHub Pages**:
-   - Go to your repository settings
-   - Scroll down to "Pages" section
-   - Under "Source", select "Deploy from a branch"
-   - Choose "main" branch and "/ (root)" folder
-   - Click "Save"
-3. **Your site will be available at**: `https://[your-username].github.io/[repository-name]`
+1. Upload the files to your repository with `index.html` in the root directory
+2. Enable GitHub Pages in repository settings:
+   - Go to Settings > Pages
+   - Set source to "Deploy from a branch"
+   - Select "main" branch and "/ (root)" folder
+   - Save changes
+3. The site will be available at `https://[username].github.io/[repository-name]`
 
 ## File Structure
 
@@ -53,11 +52,11 @@ GoldmanFamilyCookBook/
 
 ## Technical Details
 
-- Pure HTML, CSS, and JavaScript - no dependencies
-- Works offline once images are cached
-- Optimized for GitHub Pages hosting
-- Preloads adjacent pages for instant navigation
-- Mobile-first responsive design
+- Built with HTML, CSS, and JavaScript (no external dependencies)
+- Works offline after initial load
+- Designed for GitHub Pages hosting
+- Preloads adjacent pages for faster navigation
+- Responsive design optimized for all devices
 
 ## Navigation Controls
 
@@ -70,4 +69,4 @@ GoldmanFamilyCookBook/
 | Welcome screen | `Escape` key |
 | Start reading | Click "Start Cooking!" or `Enter` key |
 
-Enjoy browsing the family recipes! 👨‍🍳👩‍🍳 
+Happy cooking! 
