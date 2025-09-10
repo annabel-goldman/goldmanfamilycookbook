@@ -302,7 +302,6 @@
         const progressFill = document.getElementById('progressFill');
         const loadingSpinner = document.getElementById('loadingSpinner');
 
-        // Preload images for better performance
         function preloadImage(src) {
             if (!preloadedImages.has(src)) {
                 const img = new Image();
@@ -311,7 +310,6 @@
             }
         }
 
-        // Preload adjacent images
         function preloadAdjacentImages() {
             const prevIndex = (currentIndex > 0) ? currentIndex - 1 : svgs.length - 1;
             const nextIndex = (currentIndex < svgs.length - 1) ? currentIndex + 1 : 0;
@@ -337,7 +335,6 @@
         function handleImageError() {
             hideLoading();
             console.error(`Failed to load image: ${svgs[currentIndex]}`);
-            // Could add error message display here
         }
 
         function startCookbook() {
@@ -375,9 +372,8 @@
             loadPage(newIndex);
         }
 
-        // Keyboard navigation
         document.addEventListener('keydown', function(event) {
-            if (titlePage.style.display === 'none') { // Only when cookbook is active
+            if (titlePage.style.display === 'none') {
                 switch(event.key) {
                     case 'ArrowLeft':
                     case 'a':
@@ -410,7 +406,6 @@
             }
         });
 
-        // Touch/swipe support for mobile
         let touchStartX = 0;
         let touchEndX = 0;
 
@@ -426,18 +421,15 @@
                 
                 if (swipeDistance > swipeThreshold) {
                     if (touchEndX < touchStartX) {
-                        nextPage(); // Swipe left = next page
+                        nextPage();
                     } else {
-                        prevPage(); // Swipe right = previous page
+                        prevPage();
                     }
                 }
             }
         });
 
-        // Initialize
         updatePageInfo();
-
-        // Preload first few images for faster initial loading
         setTimeout(() => {
             preloadImage(svgs[0]);
             preloadImage(svgs[1]);
