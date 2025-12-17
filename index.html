@@ -4,38 +4,71 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Goldman Family Cookbook</title>
-    <link rel="icon" href="svgs/Icon.png" type="image/x-icon">
+    <link rel="icon" href="svgs/Icon.png" type="image/png">
+    <link rel="shortcut icon" href="svgs/Icon.png" type="image/png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
         * {
             box-sizing: border-box;
         }
 
         body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
             min-height: 100vh;
             margin: 0;
-            background-color: #77975b;
+            background-color: #f8f5f0;
             font-family: 'Playfair Display', serif;
-            padding: 10px;
         }
 
         .container {
-            position: relative;
             width: 100%;
-            max-width: 900px;
-            height: 90vh;
-            min-height: 600px;
-            max-height: 800px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            height: 100vh;
             overflow: hidden;
-            background-color: #accb91;
-            border-radius: 15px;
-            border: 5px solid #77975b;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .app-header {
+            background-color: #f8f5f0;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            z-index: 40;
+            border-bottom: 1px solid rgba(119, 151, 91, 0.2);
+        }
+
+        .main-content {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            background-color: #f8f5f0;
+        }
+
+        .main-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 20px;
+            right: 20px;
+            bottom: 0;
+            border-left: 2px solid rgba(172, 203, 145, 0.3);
+            border-right: 2px solid rgba(172, 203, 145, 0.3);
+            pointer-events: none;
+            z-index: 45;
+        }
+
+        .app-footer {
+            background-color: #f8f5f0;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 40;
+            border-top: 1px solid rgba(119, 151, 91, 0.2);
         }
 
         .page {
@@ -51,13 +84,119 @@
         .page img {
             max-width: 100%;
             max-height: 100%;
-            border-radius: 10px;
+            padding: 20px;
             transition: opacity 0.3s ease;
             object-fit: contain;
         }
 
         .page img.loading {
             opacity: 0.5;
+        }
+
+        .text-view {
+            width: 100%;
+            height: 100%;
+            padding: 60px 20%;
+            overflow-y: auto;
+            background-color: #f8f5f0;
+            display: none;
+            flex-direction: column;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .text-view h1 {
+            color: #77975b;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-align: center;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .text-view h2 {
+            color: #5a7a4e;
+            font-size: 1.4em;
+            margin-top: 20px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+        }
+
+        .text-view h3 {
+            color: #77975b;
+            font-size: 1.1em;
+            margin-top: 15px;
+            margin-bottom: 10px;
+            font-style: italic;
+        }
+
+        .text-view hr {
+            border: none;
+            height: 2px;
+            background-color: #accb91;
+            width: 100px;
+            margin: 20px auto;
+            opacity: 0.6;
+        }
+
+        .text-view ul, .text-view ol {
+            margin-bottom: 15px;
+        }
+
+        .text-view li {
+            margin-bottom: 5px;
+            font-size: 0.95em;
+        }
+
+        .text-view p {
+            margin-bottom: 15px;
+            font-size: 0.95em;
+        }
+
+        .text-view h1 + p {
+            text-align: center;
+            margin-top: -10px;
+            margin-bottom: 20px;
+            font-style: italic;
+            opacity: 0.8;
+        }
+
+        .view-toggle {
+            position: static;
+            transform: none;
+            background-color: transparent;
+            padding: 0;
+            border-radius: 0;
+            display: flex;
+            border: 1px solid #77975b;
+        }
+
+        .toggle-btn {
+            padding: 6px 15px;
+            border: none;
+            background: none;
+            border-radius: 0;
+            cursor: pointer;
+            font-family: 'Playfair Display', serif;
+            font-size: 0.8em;
+            font-weight: 700;
+            color: #77975b;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .toggle-btn.active {
+            background-color: #77975b;
+            color: #f8f5f0;
+        }
+
+        .toggle-btn:not(.active):hover {
+            background-color: rgba(119, 151, 91, 0.1);
         }
 
         .loading-spinner {
@@ -85,74 +224,99 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, rgba(255, 248, 225, 0.95), rgba(172, 203, 145, 0.95));
+            background-color: #f8f5f0;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 10;
+            z-index: 50;
             color: #77975b;
             text-align: center;
             padding: 40px;
         }
 
+        .title-page::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            bottom: 20px;
+            border: 2px solid #accb91;
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
         .title-page h1 {
-            font-size: 3em;
-            margin-bottom: 10px;
+            font-size: 4em;
+            margin-bottom: 5px;
             font-weight: 700;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            line-height: 1.1;
+        }
+
+        .title-page .divider {
+            width: 100px;
+            height: 2px;
+            background-color: #77975b;
+            margin: 25px 0;
         }
 
         .title-page p {
-            font-size: 1.3em;
-            margin-bottom: 30px;
-            opacity: 0.8;
+            font-size: 1.4em;
+            margin-bottom: 40px;
+            font-style: italic;
+            opacity: 0.9;
+            max-width: 600px;
         }
 
         .title-page button {
             font-family: 'Playfair Display', serif;
-            padding: 15px 30px;
-            font-size: 1.2em;
-            background-color: #77975b;
-            color: white;
-            border: none;
-            border-radius: 25px;
+            padding: 12px 40px;
+            font-size: 1.1em;
+            background-color: transparent;
+            color: #77975b;
+            border: 2px solid #77975b;
+            border-radius: 0;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: all 0.4s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 700;
         }
 
         .title-page button:hover {
-            background-color: #5a7a4e;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+            background-color: #77975b;
+            color: #f8f5f0;
+            transform: scale(1.05);
         }
 
         .page-info {
-            position: absolute;
-            bottom: 15px;
-            left: 50%;
-            transform: translateX(-50%);
             display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 20px;
-            background-color: rgba(255, 255, 255, 0.9);
-            padding: 8px 16px;
-            border-radius: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            gap: 10px;
+            background-color: transparent;
+            padding: 0;
+            border-radius: 0;
+            box-shadow: none;
         }
 
         .page-number {
-            font-size: 1em;
+            font-size: 0.85em;
             color: #77975b;
-            font-weight: 600;
+            font-weight: 700;
+            white-space: nowrap;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
 
         .progress-bar {
             width: 200px;
-            height: 4px;
-            background-color: #e0e0e0;
-            border-radius: 2px;
+            height: 2px;
+            background-color: rgba(119, 151, 91, 0.2);
+            border-radius: 0;
             overflow: hidden;
         }
 
@@ -160,61 +324,164 @@
             height: 100%;
             background-color: #77975b;
             transition: width 0.3s ease;
-            border-radius: 2px;
+            border-radius: 0;
+        }
+
+        /* Search Styles */
+        .search-container {
+            position: relative;
+            z-index: 30;
+            width: 200px;
+        }
+
+        .search-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            background-color: transparent;
+            border-radius: 0;
+            padding: 4px 12px;
+            border: 1px solid #77975b;
+            transition: all 0.3s ease;
+        }
+
+        .search-wrapper:focus-within {
+            background-color: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            width: 240px;
+        }
+
+        .search-input {
+            width: 100%;
+            border: none;
+            background: none;
+            padding: 6px 0;
+            font-family: 'Playfair Display', serif;
+            font-size: 0.85em;
+            font-weight: 700;
+            color: #77975b;
+            outline: none;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .search-input::placeholder {
+            color: #accb91;
+            opacity: 0.6;
+        }
+
+        .search-icon {
+            color: #77975b;
+            margin-right: 8px;
+            font-size: 0.85em;
+            opacity: 0.7;
+        }
+
+        .search-results {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            width: 300px;
+            background-color: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            max-height: 400px;
+            overflow-y: auto;
+            display: none;
+            border: 1px solid rgba(172, 203, 145, 0.3);
+        }
+
+        .search-result-item {
+            padding: 10px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(119, 151, 91, 0.05);
+            transition: background-color 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
+
+        .search-result-item:hover {
+            background-color: rgba(119, 151, 91, 0.05);
+        }
+
+        .search-result-title {
+            color: #77975b;
+            font-weight: 700;
+            font-size: 0.85em;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .search-result-author {
+            color: #5a7a4e;
+            font-size: 0.7em;
+            opacity: 0.8;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .search-result-type {
+            font-size: 0.6em;
+            color: #77975b;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
         }
 
         .nav-button {
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            background-color: rgba(119, 151, 91, 0.9);
-            border: none;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            color: white;
-            font-size: 1.8em;
+            background-color: transparent;
+            border: 1px solid #77975b;
+            border-radius: 0;
+            width: 45px;
+            height: 45px;
+            color: #77975b;
+            font-size: 1.5em;
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 20;
         }
 
-        .nav-button:hover {
-            background-color: rgba(90, 122, 78, 0.9);
-            transform: translateY(-50%) scale(1.1);
+        .nav-button:hover:not(:disabled) {
+            background-color: #77975b;
+            color: #f8f5f0;
         }
 
-        .nav-button:active {
+        .nav-button:active:not(:disabled) {
             transform: translateY(-50%) scale(0.95);
         }
 
         .nav-button.left {
-            left: 15px;
+            left: 30px;
         }
 
         .nav-button.right {
-            right: 15px;
+            right: 30px;
         }
 
         .nav-button:disabled {
-            opacity: 0.3;
+            opacity: 0.2;
             cursor: not-allowed;
+            border-color: #accb91;
         }
 
         .keyboard-hint {
-            position: absolute;
-            top: 15px;
-            right: 15px;
             background-color: rgba(255, 255, 255, 0.9);
-            padding: 8px 12px;
+            padding: 6px 12px;
             border-radius: 15px;
-            font-size: 0.9em;
+            font-size: 0.8em;
             color: #77975b;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            font-weight: 600;
         }
 
         @media (max-width: 768px) {
@@ -243,17 +510,33 @@
             }
 
             .progress-bar {
+                width: 100px;
+            }
+
+            .search-container {
                 width: 150px;
+            }
+
+            .text-view {
+                padding: 30px 40px;
             }
         }
 
         @media (max-width: 480px) {
+            .app-header {
+                padding: 8px;
+            }
+
             .page-info {
-                flex-direction: column;
                 gap: 10px;
+                padding: 4px 12px;
             }
 
             .progress-bar {
+                width: 80px;
+            }
+
+            .search-container {
                 width: 120px;
             }
         }
@@ -261,46 +544,220 @@
 </head>
 <body>
     <div class="container">
-        <div class="title-page" id="titlePage">
-            <h1>Goldman Family Cookbook</h1>
-            <p>A treasured collection of our family recipes</p>
-            <button onclick="startCookbook()">Start Cooking!</button>
-        </div>
-        <div class="page" id="page" style="display: none;">
-            <button class="nav-button left" onclick="prevPage()" title="Previous page (←)">&#8249;</button>
-            <img id="svgImage" src="" alt="Cookbook Page" onload="hideLoading()" onerror="handleImageError()">
-            <div class="loading-spinner" id="loadingSpinner"></div>
-            <button class="nav-button right" onclick="nextPage()" title="Next page (→)">&#8250;</button>
+        <header class="app-header" id="appHeader" style="display: none;">
+            <div class="search-container">
+                <div class="search-wrapper">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" class="search-input" id="searchInput" placeholder="Search recipes..." autocomplete="off">
+                </div>
+                <div class="search-results" id="searchResults"></div>
+            </div>
+            <div class="view-toggle">
+                <button class="toggle-btn active" id="svgBtn" onclick="setViewMode('svg')">Image</button>
+                <button class="toggle-btn" id="textBtn" onclick="setViewMode('text')">Text</button>
+            </div>
+            <div style="width: 200px;"></div> <!-- Spacer to keep toggle centered -->
+        </header>
+
+        <main class="main-content">
+            <div class="title-page" id="titlePage">
+                <h1>Goldman Family<br>Cookbook</h1>
+                <div class="divider"></div>
+                <p>A Holiday Collection of Family Recipes</p>
+                <button onclick="startCookbook()">Open Cookbook</button>
+            </div>
+            
+            <div class="page" id="page" style="display: none;">
+                <button class="nav-button left" onclick="prevPage()" title="Previous page (←)">&#8249;</button>
+                <img id="svgImage" src="" alt="Cookbook Page" onload="hideLoading()" onerror="handleImageError()">
+                <div id="textView" class="text-view"></div>
+                <div class="loading-spinner" id="loadingSpinner"></div>
+                <button class="nav-button right" onclick="nextPage()" title="Next page (→)">&#8250;</button>
+            </div>
+        </main>
+
+        <footer class="app-footer" id="appFooter" style="display: none;">
             <div class="page-info">
-                <div class="page-number" id="pageNumber">Page 1 of 29</div>
+                <div class="page-number" id="pageNumber">Page 1 of 33</div>
                 <div class="progress-bar">
                     <div class="progress-fill" id="progressFill"></div>
                 </div>
             </div>
-            <div class="keyboard-hint">Use ← → keys to navigate</div>
-        </div>
+        </footer>
     </div>
 
     <script>
         const svgs = [
-            "svgs/1.svg", "svgs/2.svg", "svgs/3.svg", "svgs/4.svg", "svgs/5.svg",
-            "svgs/6.svg", "svgs/7.svg", "svgs/8.svg", "svgs/9.svg", "svgs/10.svg",
-            "svgs/11.svg", "svgs/12.svg", "svgs/13.svg", "svgs/14.svg", "svgs/15.svg",
-            "svgs/16.svg", "svgs/17.svg", "svgs/18.svg", "svgs/19.svg", "svgs/20.svg",
-            "svgs/21.svg", "svgs/22.svg", "svgs/23.svg", "svgs/24.svg", "svgs/25.svg",
-            "svgs/26.svg", "svgs/27.svg", "svgs/28.svg", "svgs/29.svg"
+            "svgs/00-cover-page.svg",
+            "svgs/00-authors-note.svg",
+            "svgs/01-classic-hearty-spinach-omelette.svg",
+            "svgs/02-grandmamas-pancakes-buttermilk-syrup.svg",
+            "svgs/03-simple-pumpkin-applesauce-muffins.svg",
+            "svgs/04-crispy-saturday-morning-hash-browns.svg",
+            "svgs/05-no-bake-customizable-granola-bars.svg",
+            "svgs/06-traditional-sweet-braided-challah.svg",
+            "svgs/07-sands-famous-biscuit-round-bread.svg",
+            "svgs/08-maple-pecan-bacon-baked-brie.svg",
+            "svgs/09-buttery-corn-casserole.svg",
+            "svgs/10-toasted-almond-onion-brussel-sprouts.svg",
+            "svgs/11-generation-legacy-calico-bean-medley.svg",
+            "svgs/12-esalen-seed-avocado-kale-salad.svg",
+            "svgs/13-garden-fresh-broccoli-bacon-salad.svg",
+            "svgs/14-oven-baked-mac-and-cheese.svg",
+            "svgs/15-simple-al-dente-garlic-noodles.svg",
+            "svgs/16-tagliatelle-creamy-pesto-pasta.svg",
+            "svgs/17-oven-roasted-chicken-potatoes.svg",
+            "svgs/18-savory-skillet-prime-rib-roast.svg",
+            "svgs/19-sunday-night-memphis-dust-ribs.svg",
+            "svgs/20-chicken-piccata-lemon-capers.svg",
+            "svgs/21-apple-juice-brined-smoked-turkey.svg",
+            "svgs/22-parmesan-crusted-chicken-cutlets.svg",
+            "svgs/23-mary-mackenzies-scottish-shortbread.svg",
+            "svgs/24-classic-chocolate-chip-cookies.svg",
+            "svgs/25-classic-chocolate-frosted-brownies.svg",
+            "svgs/26-creamy-dirt-cups-gummy-worms.svg",
+            "svgs/27-chocolate-peanut-butter-star-cookies.svg",
+            "svgs/28-double-chocolate-cookie-crumble-cheesecake.svg",
+            "svgs/29-grandma-inspired-strawberry-jello-mold.svg",
+            "svgs/30-brown-butter-chocolate-chip-toffee-cookies.svg",
+            "svgs/31-end-page.svg"
+        ];
+
+        const recipeData = [
+            { title: "Cover Page", author: "", type: "Intro", index: 0 },
+            { title: "Author's Note", author: "Annabel", type: "Intro", index: 1 },
+            { title: "Classic Hearty Spinach Omelette", author: "Joe Tragesser", type: "Breakfast", index: 2 },
+            { title: "Grandmama's Pancakes with Buttermilk Syrup", author: "Sheila Hudson", type: "Breakfast", index: 3 },
+            { title: "Simple Pumpkin or Applesauce Muffins", author: "Ember Tragesser", type: "Breakfast", index: 4 },
+            { title: "Crispy Saturday Morning Hash Browns", author: "Rob Goldman", type: "Breakfast", index: 5 },
+            { title: "No-Bake Customizable Granola Bars", author: "Ember Tragesser", type: "Snack", index: 6 },
+            { title: "Traditional Sweet Braided Challah", author: "Kristin Hudson", type: "Bread", index: 7 },
+            { title: "Sand's Famous Biscuit Round Bread", author: "Hank Goldman", type: "Bread", index: 8 },
+            { title: "Maple Pecan Bacon Baked Brie", author: "Kristin Hudson", type: "Appetizer", index: 9 },
+            { title: "5-Ingredient Buttery Corn Casserole", author: "Sheila Hudson & Mary Hudson-Smith", type: "Side", index: 10 },
+            { title: "Toasted Almond Onion Brussel Sprouts", author: "Kristin Hudson", type: "Side", index: 11 },
+            { title: "Generation Legacy Calico Bean Medley", author: "Bruce Stephens", type: "Side", index: 12 },
+            { title: "Esalen Seed and Avocado Kale Salad", author: "Gabrielle Goldman", type: "Salad", index: 13 },
+            { title: "Garden Fresh Broccoli and Crunchy Bacon Salad", author: "Bruce Stephens", type: "Salad", index: 14 },
+            { title: "Oven Baked Bread Crumb Mac and Cheese", author: "Rob Goldman & Anita Marcus", type: "Main", index: 15 },
+            { title: "Simple Al-Dente Garlic Noodles", author: "Rick Goldman", type: "Main", index: 16 },
+            { title: "Tagliatelle Creamy Pesto Pasta", author: "Heather Tragesser", type: "Main", index: 17 },
+            { title: "Oven-Roasted Chicken with Potatoes", author: "Kristin Hudson", type: "Main", index: 18 },
+            { title: "Savory Skillet Prime Rib Roast", author: "Roger Hudson", type: "Main", index: 19 },
+            { title: "Sunday Night Memphis Dust Grilled Ribs", author: "Rob Goldman", type: "Main", index: 20 },
+            { title: "Chicken Piccata with Lemon and Capers", author: "Gabrielle Goldman", type: "Main", index: 21 },
+            { title: "Apple Juice Brined Smoked Turkey with Beer Can Stand", author: "Paris Hudson-Smith", type: "Main", index: 22 },
+            { title: "Parmesan Crusted Chicken Cutlets", author: "Kristin Goldman", type: "Main", index: 23 },
+            { title: "Mary MacKenzie's Scottish Shortbread", author: "Sheila Hudson", type: "Dessert", index: 24 },
+            { title: "Classic Chocolate Chip Cookies", author: "Abby and Ryan Voggesser", type: "Dessert", index: 25 },
+            { title: "Classic Chocolate Frosted Brownies", author: "Susan Stephens", type: "Dessert", index: 26 },
+            { title: "Creamy Dirt Cups with Gummy Worms", author: "Bruce Stephens", type: "Dessert", index: 27 },
+            { title: "Chocolate Peanut Butter Star Cookies", author: "Susan Stephens", type: "Dessert", index: 28 },
+            { title: "Double Chocolate Cookie Crumble Cheesecake", author: "Anita Marcus", type: "Dessert", index: 29 },
+            { title: "Grandma Inspired Strawberry Jell-O Mold", author: "Susan Stephens", type: "Dessert", index: 30 },
+            { title: "Brown Butter Chocolate Chip Toffee Cookies", author: "Annabel Goldman", type: "Dessert", index: 31 },
+            { title: "Thank You", author: "", type: "End", index: 32 }
         ];
 
         let currentIndex = 0;
+        let viewMode = 'svg'; // 'svg' or 'text'
         let preloadedImages = new Map();
+        let preloadedText = new Map();
         let isLoading = false;
 
         const svgImage = document.getElementById('svgImage');
+        const textView = document.getElementById('textView');
+        const svgBtn = document.getElementById('svgBtn');
+        const textBtn = document.getElementById('textBtn');
         const titlePage = document.getElementById('titlePage');
         const pageSection = document.getElementById('page');
         const pageNumber = document.getElementById('pageNumber');
         const progressFill = document.getElementById('progressFill');
         const loadingSpinner = document.getElementById('loadingSpinner');
+        const searchInput = document.getElementById('searchInput');
+        const searchResults = document.getElementById('searchResults');
+
+        function setViewMode(mode) {
+            viewMode = mode;
+            if (mode === 'svg') {
+                svgImage.style.display = 'block';
+                textView.style.display = 'none';
+                svgBtn.classList.add('active');
+                textBtn.classList.remove('active');
+            } else {
+                svgImage.style.display = 'none';
+                textView.style.display = 'flex';
+                svgBtn.classList.remove('active');
+                textBtn.classList.add('active');
+                loadTextContent(currentIndex);
+            }
+        }
+
+        async function loadTextContent(index) {
+            const svgPath = svgs[index];
+            const textPath = svgPath.replace('svgs/', 'recipes/').replace('.svg', '.md');
+            
+            if (preloadedText.has(textPath)) {
+                textView.innerHTML = marked.parse(preloadedText.get(textPath));
+                return;
+            }
+
+            try {
+                const response = await fetch(textPath);
+                const text = await response.text();
+                preloadedText.set(textPath, text);
+                textView.innerHTML = marked.parse(text);
+                textView.scrollTop = 0;
+            } catch (error) {
+                console.error('Error loading text content:', error);
+                textView.innerHTML = '<p>Error loading recipe text.</p>';
+            }
+        }
+
+        // Search functionality
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase().trim();
+            if (query.length < 2) {
+                searchResults.style.display = 'none';
+                return;
+            }
+
+            const filtered = recipeData.filter(item => 
+                item.title.toLowerCase().includes(query) || 
+                item.author.toLowerCase().includes(query) ||
+                item.type.toLowerCase().includes(query)
+            );
+
+            if (filtered.length > 0) {
+                searchResults.innerHTML = filtered.map(item => `
+                    <div class="search-result-item" onclick="goToRecipe(${item.index})">
+                        <span class="search-result-type">${item.type}</span>
+                        <span class="search-result-title">${item.title}</span>
+                        <span class="search-result-author">${item.author}</span>
+                    </div>
+                `).join('');
+                searchResults.style.display = 'block';
+            } else {
+                searchResults.innerHTML = '<div class="search-result-item"><span class="search-result-title">No recipes found</span></div>';
+                searchResults.style.display = 'block';
+            }
+        });
+
+        function goToRecipe(index) {
+            if (titlePage.style.display !== 'none') {
+                startCookbook();
+            }
+            loadPage(index);
+            searchInput.value = '';
+            searchResults.style.display = 'none';
+        }
+
+        // Close search results when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.search-container')) {
+                searchResults.style.display = 'none';
+            }
+        });
 
         function preloadImage(src) {
             if (!preloadedImages.has(src)) {
@@ -309,6 +766,9 @@
                 preloadedImages.set(src, img);
             }
         }
+
+        const appHeader = document.getElementById('appHeader');
+        const appFooter = document.getElementById('appFooter');
 
         function preloadAdjacentImages() {
             const prevIndex = (currentIndex > 0) ? currentIndex - 1 : svgs.length - 1;
@@ -340,6 +800,8 @@
         function startCookbook() {
             titlePage.style.display = 'none';
             pageSection.style.display = 'flex';
+            appHeader.style.display = 'flex';
+            appFooter.style.display = 'flex';
             loadPage(0);
             preloadAdjacentImages();
         }
@@ -356,6 +818,11 @@
             showLoading();
             currentIndex = index;
             svgImage.src = svgs[currentIndex];
+            
+            if (viewMode === 'text') {
+                loadTextContent(currentIndex);
+            }
+            
             updatePageInfo();
             preloadAdjacentImages();
         }
@@ -373,17 +840,22 @@
         }
 
         document.addEventListener('keydown', function(event) {
+            // If user is typing in search input, don't navigate
+            if (document.activeElement === searchInput) {
+                if (event.key === 'Escape') {
+                    searchInput.blur();
+                    searchResults.style.display = 'none';
+                }
+                return;
+            }
+
             if (titlePage.style.display === 'none') {
                 switch(event.key) {
                     case 'ArrowLeft':
-                    case 'a':
-                    case 'A':
                         event.preventDefault();
                         prevPage();
                         break;
                     case 'ArrowRight':
-                    case 'd':
-                    case 'D':
                         event.preventDefault();
                         nextPage();
                         break;
@@ -399,6 +871,17 @@
                         event.preventDefault();
                         titlePage.style.display = 'flex';
                         pageSection.style.display = 'none';
+                        appHeader.style.display = 'none';
+                        appFooter.style.display = 'none';
+                        break;
+                    case 't':
+                    case 'T':
+                        event.preventDefault();
+                        setViewMode(viewMode === 'svg' ? 'text' : 'svg');
+                        break;
+                    case '/':
+                        event.preventDefault();
+                        searchInput.focus();
                         break;
                 }
             } else if (event.key === 'Enter' && titlePage.style.display !== 'none') {
