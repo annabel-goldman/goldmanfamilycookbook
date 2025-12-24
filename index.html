@@ -370,13 +370,6 @@
             opacity: 0.6;
         }
 
-        .search-icon {
-            color: #77975b;
-            margin-right: 8px;
-            font-size: 0.85em;
-            opacity: 0.7;
-        }
-
         .search-results {
             position: absolute;
             top: calc(100% + 8px);
@@ -474,6 +467,10 @@
             border-color: #accb91;
         }
 
+        .header-spacer {
+            width: 200px;
+        }
+
         .keyboard-hint {
             background-color: rgba(255, 255, 255, 0.9);
             padding: 6px 12px;
@@ -486,23 +483,44 @@
 
         @media (max-width: 768px) {
             .container {
-                height: 95vh;
-                border-radius: 10px;
-                border-width: 3px;
+                height: 100vh;
+                height: 100dvh;
+            }
+
+            .app-header {
+                padding: 12px 15px;
+                flex-wrap: wrap;
+                gap: 12px;
             }
 
             .title-page h1 {
-                font-size: 2.2em;
+                font-size: 2.4em;
             }
 
             .title-page p {
                 font-size: 1.1em;
+                padding: 0 20px;
+            }
+
+            .title-page::before {
+                top: 10px;
+                left: 10px;
+                right: 10px;
+                bottom: 10px;
             }
 
             .nav-button {
-                width: 45px;
-                height: 45px;
-                font-size: 1.6em;
+                width: 40px;
+                height: 40px;
+                font-size: 1.4em;
+            }
+
+            .nav-button.left {
+                left: 10px;
+            }
+
+            .nav-button.right {
+                right: 10px;
             }
 
             .keyboard-hint {
@@ -510,34 +528,158 @@
             }
 
             .progress-bar {
-                width: 100px;
+                width: 120px;
             }
 
             .search-container {
-                width: 150px;
+                width: 100%;
+                order: 3;
+                flex-basis: 100%;
+            }
+
+            .search-wrapper {
+                width: 100%;
+            }
+
+            .search-wrapper:focus-within {
+                width: 100%;
+            }
+
+            .search-results {
+                width: 100%;
+                right: 0;
+            }
+
+            .view-toggle {
+                order: 2;
+            }
+
+            .header-spacer {
+                display: none;
             }
 
             .text-view {
-                padding: 30px 40px;
+                padding: 30px 25px;
+            }
+
+            .text-view h1 {
+                font-size: 1.8em;
+            }
+
+            .text-view h2 {
+                font-size: 1.2em;
+            }
+
+            .main-content::before {
+                left: 10px;
+                right: 10px;
+            }
+
+            .app-footer {
+                padding: 12px 15px;
+            }
+
+            .page img {
+                padding: 10px 60px;
             }
         }
 
         @media (max-width: 480px) {
             .app-header {
-                padding: 8px;
+                padding: 10px 12px;
+                gap: 10px;
+            }
+
+            .title-page h1 {
+                font-size: 1.9em;
+            }
+
+            .title-page p {
+                font-size: 1em;
+                margin-bottom: 30px;
+            }
+
+            .title-page button {
+                padding: 10px 30px;
+                font-size: 0.95em;
             }
 
             .page-info {
-                gap: 10px;
-                padding: 4px 12px;
+                gap: 8px;
+            }
+
+            .page-number {
+                font-size: 0.75em;
             }
 
             .progress-bar {
-                width: 80px;
+                width: 100px;
             }
 
-            .search-container {
-                width: 120px;
+            .toggle-btn {
+                padding: 5px 12px;
+                font-size: 0.7em;
+            }
+
+            .search-input {
+                font-size: 0.8em;
+                padding: 5px 0;
+            }
+
+            .nav-button {
+                width: 36px;
+                height: 36px;
+                font-size: 1.2em;
+            }
+
+            .nav-button.left {
+                left: 5px;
+            }
+
+            .nav-button.right {
+                right: 5px;
+            }
+
+            .text-view {
+                padding: 20px 18px;
+            }
+
+            .text-view h1 {
+                font-size: 1.5em;
+                letter-spacing: 1px;
+            }
+
+            .text-view h2 {
+                font-size: 1.1em;
+            }
+
+            .page img {
+                padding: 8px 55px;
+            }
+
+            .app-footer {
+                padding: 10px 12px;
+            }
+
+            .main-content::before {
+                left: 5px;
+                right: 5px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .title-page h1 {
+                font-size: 1.6em;
+            }
+
+            .nav-button {
+                width: 32px;
+                height: 32px;
+                font-size: 1em;
+            }
+
+            .page img {
+                padding: 5px 50px;
             }
         }
     </style>
@@ -547,7 +689,6 @@
         <header class="app-header" id="appHeader" style="display: none;">
             <div class="search-container">
                 <div class="search-wrapper">
-                    <span class="search-icon">🔍</span>
                     <input type="text" class="search-input" id="searchInput" placeholder="Search recipes..." autocomplete="off">
                 </div>
                 <div class="search-results" id="searchResults"></div>
@@ -556,7 +697,7 @@
                 <button class="toggle-btn active" id="svgBtn" onclick="setViewMode('svg')">Image</button>
                 <button class="toggle-btn" id="textBtn" onclick="setViewMode('text')">Text</button>
             </div>
-            <div style="width: 200px;"></div> <!-- Spacer to keep toggle centered -->
+            <div class="header-spacer"></div> <!-- Spacer to keep toggle centered -->
         </header>
 
         <main class="main-content">
